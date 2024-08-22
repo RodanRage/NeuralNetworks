@@ -6,53 +6,51 @@ namespace NeuralNetworks
     {
         static void Main(string[] args)
         {
-            float[] weights = new float[] { 0.5f, 0.48f, -0.7f };
-            float alpha = 0.1f;
+            Random rand = new Random();
+
+            float[][] weights0_1 = new float[][]
+            {
+                new float[] {rand.NextSingle(), rand.NextSingle(), rand.NextSingle() },
+                new float[] {rand.NextSingle(), rand.NextSingle(), rand.NextSingle() },
+                new float[] {rand.NextSingle(), rand.NextSingle(), rand.NextSingle() },
+                new float[] {rand.NextSingle(), rand.NextSingle(), rand.NextSingle() }
+            };
+            float[] weights1_2 = new float[] 
+            { 
+                rand.NextSingle(), 
+                rand.NextSingle(), 
+                rand.NextSingle(), 
+                rand.NextSingle() 
+            };
+            float alpha = 0.2f;
 
             byte[][] streetLights = new byte[][] 
             { 
                 new byte[] { 1, 0, 1 }, 
                 new byte[] { 0, 1, 1 }, 
                 new byte[] { 0, 0, 1 },
-                new byte[] { 1, 1, 1 },
-                new byte[] { 0, 1, 1 },
-                new byte[] { 1, 0, 1 }
+                new byte[] { 1, 1, 1 }
             };
-            byte[,] walkStop = new byte[6, 1]
+            byte[,] walkStop = new byte[4, 1]
             {
+                { 1 },
+                { 1 },
                 { 0 },
-                { 1 },
-                { 0 },
-                { 1 },
-                { 1 },
                 { 0 }
             };
 
-
-            byte[] input;
-            byte goalPrediction;
-            float prediction, error, delta, errorForAllLights;
-
-            for (int i = 0; i < 40; i++)
+            byte[] layer0 = streetLights[0];
+            
+            float[] layer1 = new float[4];
+            for (int i = 0; i < layer1.Length; i++)
             {
-                errorForAllLights = 0;
-                for (int k = 0; k < walkStop.Length; k++)
-                {
-                    input = streetLights[k];
-                    goalPrediction = walkStop[k, 0];
-
-                    prediction = GetPrediction(input, weights);
-                    delta = prediction - goalPrediction;
-                    error = delta * delta;
-                    errorForAllLights += error;
-
-                    for (int j = 0; j < weights.Length; j++)
-                    {
-                        weights[j] = weights[j] - (alpha * input[j] * delta);
-                    }
-                    Console.WriteLine($"k = {k}) Prediction: {prediction}");
-                }
-                Console.WriteLine($"{i}) Error: {errorForAllLights}");
+                layer1[i] = Relu(MatrixOperations.GetWsum(layer0, weights0_1[i]));
+            }
+            
+            float[] layer2 = new float[2];
+            for (int i = 0; i < layer2.Length; i++)
+            {
+                layer2[i] = Relu(MatrixOperations.GetWsum(layer1, weights1_2));
             }
         }
 
@@ -68,7 +66,11 @@ namespace NeuralNetworks
             return prediction;
         }
 
-        
+        static float Relu(float x)
+        {
+            if (x > 0) return x;
+            else return 0;
+        }
         
     }
 }
