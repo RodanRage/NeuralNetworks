@@ -10,17 +10,17 @@ namespace NeuralNetworks
 
             float[][] weights0_1 = new float[][]
             {
-                new float[] {rand.NextSingle(), rand.NextSingle(), rand.NextSingle() },
-                new float[] {rand.NextSingle(), rand.NextSingle(), rand.NextSingle() },
-                new float[] {rand.NextSingle(), rand.NextSingle(), rand.NextSingle() },
-                new float[] {rand.NextSingle(), rand.NextSingle(), rand.NextSingle() }
+                new float[] { 2 * rand.NextSingle() - 1, 2 * rand.NextSingle() - 1, 2 * rand.NextSingle() - 1 },
+                new float[] { 2 * rand.NextSingle() - 1, 2 * rand.NextSingle() - 1, 2 * rand.NextSingle() - 1 },
+                new float[] { 2 * rand.NextSingle() - 1, 2 * rand.NextSingle() - 1, 2 * rand.NextSingle() - 1},
+                new float[] { 2 * rand.NextSingle() - 1, 2 * rand.NextSingle() - 1, 2 * rand.NextSingle() - 1 }
             };
             float[] weights1_2 = new float[] 
-            { 
-                rand.NextSingle(), 
-                rand.NextSingle(), 
-                rand.NextSingle(), 
-                rand.NextSingle() 
+            {
+                2 * rand.NextSingle() - 1,
+                2 * rand.NextSingle() - 1,
+                2 * rand.NextSingle() - 1,
+                2 * rand.NextSingle() - 1
             };
 
             float alpha = 0.2f;
@@ -48,7 +48,6 @@ namespace NeuralNetworks
 
             for (int i = 0; i < 60; i++)
             {
-                //Console.WriteLine($"i = {i}");
                 float layer2Error = 0;
                 for (int j = 0; j < streetLights.Length; j++)
                 {
@@ -80,8 +79,6 @@ namespace NeuralNetworks
                             weights0_1[k][m] = weights0_1[k][m] - alpha * (layer0[m] * layer1Delta[k]);
                         }
                     }
-                    
-                    //Console.WriteLine($"{j}) Prediction = {layer2}");
                 }
                 if(i%10 == 9)
                 Console.WriteLine($"Error: {layer2Error}");
