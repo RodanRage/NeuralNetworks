@@ -43,10 +43,12 @@ namespace NeuralNetworks
             byte[] layer0;
             float[] layer1 = new float[4];
             float layer2;
+            float[] layer1Delta = new float[4];
             float layer2Delta;
 
             for (int i = 0; i < 60; i++)
             {
+                //Console.WriteLine($"i = {i}");
                 float layer2Error = 0;
                 for (int j = 0; j < streetLights.Length; j++)
                 {
@@ -56,11 +58,33 @@ namespace NeuralNetworks
                         layer1[k] = Relu(MatrixOperations.GetWsum(layer0, weights0_1[k]));
                     }
                     
-                    layer2 = Relu(MatrixOperations.GetWsum(layer1, weights1_2));
+                    layer2 = MatrixOperations.GetWsum(layer1, weights1_2);
 
-                    layer2Delta = layer2 - walkStop[i, 0];
-                    layer2Error = layer2Delta * layer2Delta; 
+                    layer2Delta = layer2 - walkStop[j, 0];
+                    layer2Error = layer2Error + layer2Delta * layer2Delta;
+                    layer1Delta = MatrixOperations.GetEleMul(layer2Delta, weights1_2);
+                    for(int k = 0; k < layer1Delta.Length; k++)
+                    {
+                        layer1Delta[k] *= ReluToDeriv(layer1[k]);
+                    }
+
+                    for (int k = 0; k < weights1_2.Length; k ++)
+                    {
+                        weights1_2[k] = weights1_2[k] - alpha * (layer1[k] * layer2Delta);
+                    }
+
+                    for (int k = 0; k < weights0_1.Length; k++)
+                    {
+                        for (int m = 0; m < weights0_1[k].Length; m++)
+                        {
+                            weights0_1[k][m] = weights0_1[k][m] - alpha * (layer0[m] * layer1Delta[k]);
+                        }
+                    }
+                    
+                    //Console.WriteLine($"{j}) Prediction = {layer2}");
                 }
+                if(i%10 == 9)
+                Console.WriteLine($"Error: {layer2Error}");
             }
         }
 

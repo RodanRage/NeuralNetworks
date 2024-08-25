@@ -61,7 +61,7 @@ namespace NeuralNetworks
 
         public static float[] GetEleMul(float scalar, float[] vector)
         {
-            float[] output = new float[] { 0, 0, 0 };
+            float[] output = new float[vector.Length];
             if (vector.Length == output.Length)
             {
                 for (int i = 0; i < vector.Length; i++)
